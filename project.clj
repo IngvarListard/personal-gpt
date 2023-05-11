@@ -3,13 +3,17 @@
   :url "http://example.com/FIXME"
 
   :license {:name "Eclipse Public License"
-            :url "http://www.eclipse.org/legal/epl-v10.html"}
+            :url  "http://www.eclipse.org/legal/epl-v10.html"}
 
-  :dependencies [[org.clojure/clojure "1.8.0"]
-                 [environ             "1.1.0"]
-                 [morse               "0.2.4"]]
+  :dependencies [[org.clojure/clojure "1.11.1"]
+                 [environ "1.2.0"]
+                 [morse "0.2.4"]
+                 [net.clojars.wkok/openai-clojure "0.6.0"]
+                 [org.clojure/core.async "1.6.673"]]
 
-  :plugins [[lein-environ "1.1.0"]]
+  :plugins [[lein-environ "1.2.0"]
+            [migratus-lein "0.7.3"]
+            [lein-pprint "1.3.2"] ]
 
   :main ^:skip-aot personal-gpt.core
   :target-path "target/%s"
