@@ -1,14 +1,14 @@
 (ns personal-gpt.core
   (:require
     [clojure.core.async :refer [<!!]]
-            [clojure.string :as str]
-            [environ.core :refer [env]]
-            [morse.handlers :as h]
-            [morse.polling :as p]
-            [morse.api :as t]
-            [clojure.pprint :refer [pprint]]
-            [wkok.openai-clojure.api :as api]
-            )
+    [clojure.string :as str]
+    [environ.core :refer [env]]
+    [morse.handlers :as h]
+    [morse.polling :as p]
+    [morse.api :as t]
+    [clojure.pprint :refer [pprint]]
+    [wkok.openai-clojure.api :as api]
+    )
   (:gen-class))
 
 (def token (env :telegram-token))
@@ -20,11 +20,17 @@
     (try
       (func message)
       (catch Exception e
-        (let [chat-id (or (-> message :callback_query :message :chat :id)
-                          (-> message :message :chat :id))]
-          (println "Произошло исключение\n" e "\n" "Для сообщения: ")
-          (pprint message)
-          (t/send-text token chat-id "Упс! Что-то пошло не так"))))))
+        (println "Произошло исключение\n" e "\n" "Для сообщения: ")
+        (pprint message)
+        (if-let [chat-id (or (-> message :callback_query :message :chat :id)
+                             (-> message :message :chat :id)
+                             (-> message :edited_message :from :id))]
+          (try
+              (t/send-text token chat-id "Упс! Что-то пошло не так")
+            (catch Exception e
+              (println "При отправке уведомления об ошибке пользователю произошла ошибка")
+              (println e)))
+          (println "chat_id не найден"))))))
 
 (h/defhandler handler
 
