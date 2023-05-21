@@ -48,7 +48,7 @@
                               {:role "user" :content text}]}
                   {:api-key gpt-token})
               r-text (-> r :choices first :message :content)]
-          (t/send-text token id r-text))
+          (t/send-text token id {:parse_mode "markdown"} r-text))
         (t/send-text token id "you send nothing")))))
 
 (comment
