@@ -7,7 +7,7 @@
 
   :dependencies [[org.clojure/clojure "1.11.1"]
                  [environ "1.2.0"]
-                 [morse "0.2.4"]
+                 [morse "0.4.3"]
                  [net.clojars.wkok/openai-clojure "0.6.0"]
                  [org.clojure/core.async "1.6.673"]]
 
