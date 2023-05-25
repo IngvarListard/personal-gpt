@@ -1,6 +1,6 @@
 (ns personal-gpt.core
   (:require
-    [clojure.core.async :refer [<!!]]
+    [clojure.core.async :refer [<!! <! timeout]]
     [clojure.string :as str]
     [environ.core :refer [env]]
     [morse.handlers :as h]
@@ -59,6 +59,9 @@
     {:api-key gpt-token})
   )
 
+(def run? (atom true))
+(def current-chan (atom nil))
+
 (defn -main
   [& args]
   (when (str/blank? token)
@@ -66,7 +69,25 @@
     (System/exit 1))
 
   (println "Starting the personal-gpt")
-  (<!! (p/start token (exception-middleware handler)))
+  (.addShutdownHook
+      (Runtime/getRuntime)
+      (Thread. ^Runnable (fn []
+                           (println "Stopping gracefully")
+                           (reset! run? false)
+                           ((try
+                              (p/stop @current-chan)
+                              (catch Exception e
+                                (prn "Cant stop chan " e))))
+                           (System/exit 0))))
+
+  (loop [run @run?]
+    (when run
+      (let [ch (p/start token (exception-middleware handler))]
+        (reset! current-chan ch)
+        (let [res (<!! ch)]
+          (prn "Channel closed. Sleeping for 5sec. Result: " res)
+          (<! (timeout 5000))
+          (recur @run)))))
   )
 
 (comment
