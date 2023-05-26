@@ -74,10 +74,10 @@
       (Thread. ^Runnable (fn []
                            (println "Stopping gracefully")
                            (reset! run? false)
-                           ((try
-                              (p/stop @current-chan)
-                              (catch Exception e
-                                (prn "Cant stop chan " e))))
+                           (try
+                             (p/stop @current-chan)
+                             (catch Exception e
+                               (prn "Cant stop chan " e)))
                            (System/exit 0))))
 
   (loop [run @run?]
@@ -86,7 +86,7 @@
         (reset! current-chan ch)
         (let [res (<!! ch)]
           (prn "Channel closed. Sleeping for 5sec. Result: " res)
-          (<! (timeout 5000))
+          (<!! (timeout 5000))
           (recur @run)))))
   )
 
