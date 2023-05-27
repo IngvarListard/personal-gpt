@@ -87,7 +87,7 @@
         (let [res (<!! ch)]
           (prn "Channel closed. Sleeping for 5sec. Result: " res)
           (<!! (timeout 5000))
-          (recur @run)))))
+          (recur @run?)))))
   )
 
 (comment
