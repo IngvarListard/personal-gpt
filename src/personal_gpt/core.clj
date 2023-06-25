@@ -8,7 +8,7 @@
     [morse.api :as t]
     [clojure.pprint :refer [pprint]]
     [wkok.openai-clojure.api :as api]
-    )
+    [personal-gpt.md-to-html :refer [md->html]])
   (:gen-class))
 
 (def token (env :telegram-token))
@@ -48,7 +48,7 @@
                               {:role "user" :content text}]}
                   {:api-key gpt-token})
               r-text (-> r :choices first :message :content)]
-          (t/send-text token id {:parse_mode "markdown"} r-text))
+          (t/send-text token id {:parse_mode "html"} (md->html r-text)))
         (t/send-text token id "you send nothing")))))
 
 (comment
