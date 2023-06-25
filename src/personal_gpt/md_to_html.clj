@@ -45,22 +45,12 @@
   "Change special characters into HTML character entities."
   [text state]
   [(if-not (or (:code state) (:codeblock state))
-     ;(escape-md2 text)
      (clojure.string/escape
        text
        {\& "&amp;"
         \< "&lt;"
         \> "&gt;"
         \" "&quot;"})
-     text) state])
-
-(defn escape-tg-specials
-  [text state]
-  [(if-not (or (:code state) (:codeblock state))
-     (clojure.string/escape
-       text
-       {\. "\\."
-        \_ "\\_"})
      text) state])
 
 (def transformers
@@ -79,13 +69,9 @@
    image-reference-link
    link
    implicit-reference-link
-   ;reference-link
-   ;footnote-link
    ts/hr
    ts/blockquote-1
-   ;li
    heading
-   ;ts/heading
    ts/blockquote-2
    italics
    bold-italic
@@ -95,7 +81,6 @@
    strikethrough
    ts/superscript
    table
-   ;paragraph
    ts/br
    thaw-strings
    dashes
